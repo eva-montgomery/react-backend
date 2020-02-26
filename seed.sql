@@ -11,3 +11,7 @@ values
     ('Josh', 'Cabernet Sauvignon', '12.99', 'Kroger', 'josh.jpg', 'Delicious red wine', '5'),  
       ('Nobilo', 'Sauvignon Blanc', '9.99', 'Kroger', 'nobilo.jpg', 'ok when nothing else available', '3') 
 ;     
+
+
+
+-- create database models
