@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:delete": "dropdb wine-o-clock",
+    "db:create": "createdb wine-o-clock",
+    "db:schema": "psql -f schema.sql wine-o-clock",
+    "db:seed": "psql -f seed.sql wine-o-clock",
+    "db:reset": "npm run db:delete; npm run db:create && npm run db:schema && npm run db:seed"
   },
   "keywords": [],
   "author": "",
