@@ -6,7 +6,7 @@ create table users (
     last_name text
 );
 
-create table wine (
+create table wines (
     id serial primary key,
     wine_name text,
     wine_type text,
