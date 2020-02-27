@@ -9,7 +9,7 @@ function createHash(password) {
 // Sign Up new user
 async function signUp(email, password, first_name, last_name) {
     const hash = createHash(password);
-    const returningId = await db.one("insert into users(email, password, first_name, last_name) values ( $1, $2, $3, $4) returning id", [email, password, first_name, last_name]);
+    const returningId = await db.one("insert into users(email, hash, first_name, last_name) values ( $1, $2, $3, $4) returning id", [email, hash, first_name, last_name]);
     return returningId;
 }
 
@@ -40,7 +40,7 @@ async function getById(id) {
     return user;
 }
 
-// get user by username  --> ????
+// get user by username 
 async function getByEmail(email) {
     const userEmail = await db.one(`
     select * from users where email=$1
@@ -65,6 +65,7 @@ async function updateUserData(id, email, first_name, last_name) {
 }
 
 module.exports = {
+    createHash,
     signUp,
     login,
     getUser,

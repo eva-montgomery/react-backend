@@ -13,7 +13,7 @@ async function allWines() {
 // get wines by user ID
 async function getWinesByUserID(user_id) {
     try {
-        const wines = await db.any(`select * from wines where user_id=$1`, [userId]);
+        const wines = await db.any(`select * from wines where user_id=$1`, [user_id]);
         console.log(wines)
         return wines;
     } catch (err) {
@@ -59,7 +59,7 @@ async function updateWine(id, wine_name, wine_type, wine_price, wine_store, wine
 async function updateWineName (id, wine_name) {
     const result = await db.result(`
         update wines set
-            wine_name=$1
+            wine_name=$1,
         where id=$2;`,
         [wine_name, id]);
     if (result.rowCount === 1) {
@@ -151,7 +151,30 @@ async function updateWineRating (id, wine_rating) {
 };
 
 
-// favorite wines
+// favorite wines by user ID
+async function favoriteWinesByUser(user_id) {
+    try {
+        const wines = await db.any(`select * from wines where user_id=$1 and is_favorite='t'`, [user_id]);
+        console.log(wines)
+        return wines;
+    } catch (err) {
+        console.log(err)
+        return [];
+    }
+}
+
+// favorite wines 
+async function allFavoriteWines() {
+    try {
+        const wines = await db.any(`select * from wines where is_favorite='t'`);
+        console.log(wines)
+        return wines;
+    } catch (err) {
+        console.log(err)
+        return [];
+    }
+}
+
 
 // delete a wine
 async function deleteWine(id) {
@@ -178,10 +201,7 @@ module.exports = {
     updateWineLabel,
     updateWineComments,
     updateWineRating,
-    deleteWine
-   
-
-
-
-
+    deleteWine,
+    favoriteWinesByUser,
+    allFavoriteWines
 };
