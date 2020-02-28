@@ -55,6 +55,7 @@ function requireLogin(req, res, next) {
     }
 };
 
+/////////////////       USER SECTION       /////////////////
 
 /// LOGIN  ///
 app.post('/api/login', parseForm, parseJson, async (req, res) => {
@@ -111,8 +112,74 @@ app.post('/api/signup', parseForm, parseJson, async (req, res) => {
     }
 });
 
-//wine/wineID
 
+/// PROFILE ///
+
+app.get('/api/profile', async (req, res) => {
+    const id = req.session.users_id
+    const userProfile = await user.getUser(id);
+    res.json({profile: userProfile});
+
+})
+
+/// PROFILE EDIT ////  ???????
+app.post('/profile', parseForm, async (req, res) => {
+    const { email, password, first_name, last_name } = req.body;
+    const id = req.session.users.id
+    const result = await users.updateUserData(id, email, password, first_name, last_name);
+    console.log(result)
+    console.log("received profile edit")
+    if (result) {
+        res.json({profile: userProfile});
+    } else {
+        res.json({profile: userProfile})
+    }
+});
+
+
+///////////////////      WINE SECTION        ///////////////
+
+/// GET ALL WINES ///
+app.get('/api/wines', async (req, res) => {
+    const allWines = await wine.allWines();
+
+    const wines = [];
+    for (let wine of allWines) {
+        wines.push(wine); 
+    }
+    res.json({wineList: wines});
+})
+
+/// GET WINES BY ID ///
+app.get('/api/wines/:id(\\d+)/', async (req, res) => {
+    const wineById = await wine.getWinesByID(req.params.id);
+    res.json({wineList: wineById});
+})
+
+/// GET WINES BY USER ID ///
+app.get('/api/mywines', async (req, res) => {
+    const id = req.session.user_id;
+    const winesById = await wine.getWinesByUserID(id);
+    const myWines = [];
+    for (let wine of winesById) {
+        myWines.push(wine);
+    }
+    res.json({wineList: myWines});
+})
+
+/// GET FAVORITE WINES BY USER ID ///
+app.get('/api/favorites', async (req, res) => {
+    const id = req.session.user_id;
+    const favById = await wine.favoriteWinesByUser(id)
+    const myFavWines = [];
+    for (let wine of favById) {
+        myFavWines.push(wine);
+    }
+    res.json({wineList: myFavWines});
+})
+
+
+/// ADD A NEW WINE ///
 
 /// HOME ///
 

@@ -10,6 +10,19 @@ async function allWines() {
     }
 }
 
+// get wine by wine ID
+async function getWinesByID(id) {
+    try {
+        const winesById = await db.any(`select * from wines where id=$1`, [id]);
+        console.log(winesById)
+        return winesById;
+    } catch (err) {
+        console.log(err)
+        return [];
+    }
+} 
+
+
 // get wines by user ID
 async function getWinesByUserID(user_id) {
     try {
@@ -154,7 +167,7 @@ async function updateWineRating (id, wine_rating) {
 // favorite wines by user ID
 async function favoriteWinesByUser(user_id) {
     try {
-        const wines = await db.any(`select * from wines where user_id=$1 and is_favorite='t'`, [user_id]);
+        const wines = await db.any(`select * from wines where user_id=$2 and is_favorite='t'`, [user_id]);
         console.log(wines)
         return wines;
     } catch (err) {
@@ -191,6 +204,7 @@ async function deleteWine(id) {
 
 module.exports = {
     allWines,
+    getWinesByID,
     getWinesByUserID,
     addWine,
     updateWine,
