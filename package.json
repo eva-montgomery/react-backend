@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon --ignore './sessions/' index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:delete": "dropdb wine-o-clock",
     "db:create": "createdb wine-o-clock",
@@ -18,6 +19,7 @@
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
+    "nodemon": "^2.0.2",
     "pg-promise": "^10.4.4",
     "session-file-store": "^1.4.0"
   }

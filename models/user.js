@@ -48,6 +48,14 @@ async function getByEmail(email) {
     return userEmail;
 }
 
+async function searchByEmail(email) {
+    const userEmail = await db.any(`
+    select * from users where email=$1
+    `, [email]);
+    return userEmail;
+}
+
+
 // update user data
 async function updateUserData(id, email, first_name, last_name) {
     const result = await db.result(`
@@ -72,4 +80,5 @@ module.exports = {
     getById,
     getByEmail,
     updateUserData,
+    searchByEmail
 }
