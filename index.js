@@ -116,17 +116,17 @@ app.post('/api/signup', parseForm, parseJson, async (req, res) => {
 /// PROFILE ///
 
 app.get('/api/profile', async (req, res) => {
-    const id = req.session.users_id
+    const id = req.session.user_id
     const userProfile = await user.getUser(id);
     res.json({profile: userProfile});
 
 })
 
 /// PROFILE EDIT ////  ???????
-app.post('/profile', parseForm, async (req, res) => {
+app.post('/profile/edit', parseForm, async (req, res) => {
     const { email, password, first_name, last_name } = req.body;
-    const id = req.session.users.id
-    const result = await users.updateUserData(id, email, password, first_name, last_name);
+    const id = req.session.user_id
+    const result = await user.updateUserData(id, email, password, first_name, last_name);
     console.log(result)
     console.log("received profile edit")
     if (result) {
@@ -180,8 +180,33 @@ app.get('/api/favorites', async (req, res) => {
 
 
 /// ADD A NEW WINE ///
+app.post('/api/wines/create', parseForm, parseJson, async (req, res) => {
+    const { wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating } = req.body;
+    const addNewWine = await wine.addWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating);
+    if (addNewWine.length > 0) {
+        res.json({wineList: addNewWine})
+    }
+
+})
+
+
+/// EDIT A WINE ///
+
+/// DELETE A WINE ///
+app.get('/wines/:id/delete')
+app.post('/wines/:id/delete')
 
 /// HOME ///
+
+
+
+
+
+
+
+
+
+
 
 /// LOGOUT ///
 app.get('/logout', (req, res) => {

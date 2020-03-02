@@ -58,7 +58,7 @@ async function updateWine(id, wine_name, wine_type, wine_price, wine_store, wine
         wine_store=$5,
         wine_label=$6,
         comments=$7,
-        wine_rating=$8
+        wine_rating=$8,
     where id=$1;`,
     [id, wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating]);
     if (result.rowCount === 1) {
