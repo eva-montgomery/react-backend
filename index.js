@@ -51,7 +51,9 @@ function requireLogin(req, res, next) {
         next();
     } else {
         console.log('user is not logged in')
-        res.redirect('/login');
+        res.json({
+            success: true
+        });
     }
 };
 
@@ -118,7 +120,7 @@ app.post('/api/signup', parseForm, parseJson, async (req, res) => {
 app.get('/api/profile', async (req, res) => {
     const id = req.session.user_id
     const userProfile = await user.getUser(id);
-    res.json({profile: userProfile});
+    res.json({success: userProfile});
 
 })
 
@@ -140,7 +142,8 @@ app.post('/profile/edit', parseForm, async (req, res) => {
 ///////////////////      WINE SECTION        ///////////////
 
 /// GET ALL WINES ///
-app.get('/api/wines', async (req, res) => {
+app.get('/api/wines', requireLogin, async (req, res) => {
+    console.log(req.session.user_id)
     const allWines = await wine.allWines();
 
     const wines = [];
@@ -179,18 +182,26 @@ app.get('/api/favorites', async (req, res) => {
 })
 
 
-/// ADD A NEW WINE ///
-app.post('/api/wines/create', parseForm, parseJson, async (req, res) => {
+/// ADD A NEW WINE /// upload.single('image')
+app.post('/api/wines/create', requireLogin, parseForm, parseJson, async (req, res) => {
+    const id = req.session.user_id;
     const { wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating } = req.body;
-    const addNewWine = await wine.addWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating);
-    if (addNewWine.length > 0) {
-        res.json({wineList: addNewWine})
+    // const wine_label = req.file.filename;
+// ADD IF STATEMENTS
+    const addNewWineId = await wine.addWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating, id);
+    if (addNewWineId) {
+        res.json({success: addNewWineId})
     }
 
 })
 
 
 /// EDIT A WINE ///
+
+
+
+
+
 
 /// DELETE A WINE ///
 app.get('/wines/:id/delete')
