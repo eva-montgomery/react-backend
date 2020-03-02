@@ -24,6 +24,12 @@ const wine = require('./models/wine')
 // import axios from 'axios';
 
 const FileStore = require('session-file-store')(session);
+const cors = require('cors');
+app.use(cors({
+    origin: ['*'],
+    methods: ['*'],
+    credentials: true
+}))
 app.use(session({
     store: new FileStore({}),
     resave: true,
@@ -52,7 +58,7 @@ function requireLogin(req, res, next) {
     } else {
         console.log('user is not logged in')
         res.json({
-            success: true
+            success: false
         });
     }
 };
@@ -69,7 +75,7 @@ app.post('/api/login', parseForm, parseJson, async (req, res) => {
         console.log(`the user has logged in!`);
 
         const u = await user.getByEmail(email);
-        req.session.user = {
+        req.session.users = {
             email,
             id: u.id
         };
@@ -117,7 +123,7 @@ app.post('/api/signup', parseForm, parseJson, async (req, res) => {
 
 /// PROFILE ///
 
-app.get('/api/profile', async (req, res) => {
+app.get('/api/profile', requireLogin, async (req, res) => {
     const id = req.session.user_id
     const userProfile = await user.getUser(id);
     res.json({success: userProfile});
@@ -125,7 +131,7 @@ app.get('/api/profile', async (req, res) => {
 })
 
 /// PROFILE EDIT ////  ???????
-app.post('/profile/edit', parseForm, async (req, res) => {
+app.post('/profile/edit', requireLogin, parseForm, async (req, res) => {
     const { email, password, first_name, last_name } = req.body;
     const id = req.session.user_id
     const result = await user.updateUserData(id, email, password, first_name, last_name);
@@ -143,7 +149,7 @@ app.post('/profile/edit', parseForm, async (req, res) => {
 
 /// GET ALL WINES ///
 app.get('/api/wines', requireLogin, async (req, res) => {
-    console.log(req.session.user_id)
+    console.log(req.session.users.id)
     const allWines = await wine.allWines();
 
     const wines = [];
@@ -154,15 +160,16 @@ app.get('/api/wines', requireLogin, async (req, res) => {
 })
 
 /// GET WINES BY ID ///
-app.get('/api/wines/:id(\\d+)/', async (req, res) => {
+app.get('/api/wines/:id(\\d+)/', requireLogin, async (req, res) => {
     const wineById = await wine.getWinesByID(req.params.id);
     res.json({wineList: wineById});
 })
 
 /// GET WINES BY USER ID ///
-app.get('/api/mywines', async (req, res) => {
-    const id = req.session.user_id;
+app.get('/api/mywines', requireLogin, async (req, res) => {
+    const id = req.session.users.id;
     const winesById = await wine.getWinesByUserID(id);
+    console.log(winesById)
     const myWines = [];
     for (let wine of winesById) {
         myWines.push(wine);
@@ -171,8 +178,8 @@ app.get('/api/mywines', async (req, res) => {
 })
 
 /// GET FAVORITE WINES BY USER ID ///
-app.get('/api/favorites', async (req, res) => {
-    const id = req.session.user_id;
+app.get('/api/favorites', requireLogin, async (req, res) => {
+    const id = req.session.users.id;
     const favById = await wine.favoriteWinesByUser(id)
     const myFavWines = [];
     for (let wine of favById) {
@@ -184,7 +191,8 @@ app.get('/api/favorites', async (req, res) => {
 
 /// ADD A NEW WINE /// upload.single('image')
 app.post('/api/wines/create', requireLogin, parseForm, parseJson, async (req, res) => {
-    const id = req.session.user_id;
+    console.log(req.session.users.id)
+    const id = req.session.users.id;
     const { wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating } = req.body;
     // const wine_label = req.file.filename;
 // ADD IF STATEMENTS
@@ -220,9 +228,14 @@ app.post('/wines/:id/delete')
 
 
 /// LOGOUT ///
-app.get('/logout', (req, res) => {
+app.get('/api/logout', (req, res) => {
+    console.log('logging out')
     req.session.destroy(() => {
-        res.redirect('/login');
+        console.log('user logged out')
+        res.json({
+            isLoggedOut: true
+        })
+
     });
 });
 
