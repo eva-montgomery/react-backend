@@ -2,8 +2,8 @@
 const http = require('http');
 const express = require('express');
 
-// const multer = require('multer');
-// const upload = multer({ dest: 'public/images'});
+const multer = require('multer');
+const upload = multer({ dest: 'public/images'});
 
 const app = express();
 const PORT = 4000;
@@ -22,7 +22,7 @@ const user = require('./models/user')
 const wine = require('./models/wine')
 
 // import axios from 'axios';
-
+app.use(express.static('public'));
 const FileStore = require('session-file-store')(session);
 const cors = require('cors');
 app.use(cors({
@@ -208,12 +208,12 @@ app.post('/api/addtofavorites', requireLogin, parseForm, parseJson, async (req, 
 
 
 
-/// ADD A NEW WINE /// upload.single('image')
-app.post('/api/wines/create', requireLogin, parseForm, parseJson, async (req, res) => {
+/// ADD A NEW WINE /// 
+app.post('/api/wines/create', requireLogin, upload.single('wine_label'), parseForm, parseJson, async (req, res) => {
     console.log(req.session.users.id)
     const id = req.session.users.id;
-    const { wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating } = req.body;
-    // const wine_label = req.file.filename;
+    const { wine_name, wine_type, wine_price, wine_store, comments, wine_rating } = req.body;
+    const wine_label = req.file.filename;
 // ADD IF STATEMENTS
     const addNewWineId = await wine.addWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating, id);
     if (addNewWineId) {
@@ -222,12 +222,12 @@ app.post('/api/wines/create', requireLogin, parseForm, parseJson, async (req, re
 
 })
 
-
 /// EDIT A WINE ///
-// app.get('/wines/:id/edit', requireLogin, async (req, res) => {
+// app.post('/wines/:id/edit', requireLogin, parseForm, parseJson, async (req, res) => {
+//     const id = req.session.users.id;
+//     const { wine_id } = req.body;
 
-//     const { id } = req.params;
-//     const wines = await pets.getPet(id);
+//     const updateWine = await wines.updateWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating); 
 
 //     res.render('pets/edit', {
 //         locals: {
