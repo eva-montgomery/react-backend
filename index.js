@@ -189,6 +189,25 @@ app.get('/api/favorites', requireLogin, async (req, res) => {
 })
 
 
+/// ADD FAVORITE WINES TO FAVORITES ////
+app.post('/api/addtofavorites', requireLogin, parseForm, parseJson, async (req, res) => {
+    console.log(req.body)
+    const id = req.session.users.id;
+    const { wine_id } = req.body;
+    try {
+        const addFavs = await wine.addWinesToFavorite(id, wine_id);
+        res.json({
+            addedWineFavs: true
+        });  
+    } catch (err) {
+        res.json({
+            addedWineFavs: false
+        });  
+    }
+})
+
+
+
 /// ADD A NEW WINE /// upload.single('image')
 app.post('/api/wines/create', requireLogin, parseForm, parseJson, async (req, res) => {
     console.log(req.session.users.id)
@@ -205,7 +224,42 @@ app.post('/api/wines/create', requireLogin, parseForm, parseJson, async (req, re
 
 
 /// EDIT A WINE ///
+// app.get('/wines/:id/edit', requireLogin, async (req, res) => {
 
+//     const { id } = req.params;
+//     const wines = await pets.getPet(id);
+
+//     res.render('pets/edit', {
+//         locals: {
+//             name: thePet.name,
+//             image: thePet.image,
+//             species: thePet.species,
+//             breed_id: thePet.breed_id,
+//             birthdate: dateToFormattedString(thePet.birthdate),
+//             pet_location: thePet.pet_location,
+//             color: thePet.color,
+//             gender: thePet.gender,
+//             size: thePet.size,
+//             pet_description: thePet.pet_description
+//         },
+//         partials,
+//     });
+// });
+
+// app.post('/pets/:id/edit', requireLogin, upload.single('image'), parseForm, async (req, res) => {
+//     const { name, species, birthdate, pet_location, color, gender, size, pet_description } = req.body;
+//     const { id } = req.params;
+//     const image = req.file.filename;
+//     const updatedId = await pets.updatePet(id, name, species, birthdate, pet_location, color, gender, size, pet_description);
+//     const UpdateImage = await pets.updatePetImage(id, image);
+
+
+//     if (updatedId) {
+//         res.redirect(`/pets/${id}`);
+//     } else {
+//         res.redirect(`/pets/${id}/edit`)
+//     }
+// });
 
 
 

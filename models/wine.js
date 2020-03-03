@@ -167,7 +167,11 @@ async function updateWineRating (id, wine_rating) {
 // favorite wines by user ID
 async function favoriteWinesByUser(user_id) {
     try {
-        const wines = await db.any(`select * from favorite_wines where user_id=$1`, [user_id]);
+        const wines = await db.any(`SELECT wines.wine_name, wines.wine_name, wines.wine_price, wines.wine_label, wines.comments, wines.wine_rating, favorite_wines.user_id 
+        FROM wines 
+        INNER JOIN favorite_wines
+        ON wines.id = favorite_wines.wine_id
+        where favorite_wines.user_id=$1;`, [user_id]);
         console.log(wines)
         return wines;
     } catch (err) {
@@ -175,7 +179,21 @@ async function favoriteWinesByUser(user_id) {
         return [];
     }
 }
-
+ 
+// add favorite wines 
+async function addWinesToFavorite(user_id, wine_id) {
+    try { 
+        const addFavWines = await db.one(`
+            insert into favorite_wines 
+                (user_id, wine_id)
+            values 
+                ($1, $2);`, [user_id, wine_id]);
+        return addFavWines;    
+    } catch (err) {
+        console.log(err)
+        return [];
+    }
+}
 
 
 
@@ -221,5 +239,6 @@ module.exports = {
     updateWineRating,
     deleteWine,
     favoriteWinesByUser,
+    addWinesToFavorite
     
 };
