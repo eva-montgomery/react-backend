@@ -18,3 +18,9 @@ create table wines (
     is_favorite boolean, 
     user_id integer references users (id)
 );
+
+create table favorite_wines (
+    id serial primary key,
+    user_id integer references users (id),
+    wine_id integer references wines (id)
+);

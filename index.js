@@ -124,7 +124,7 @@ app.post('/api/signup', parseForm, parseJson, async (req, res) => {
 /// PROFILE ///
 
 app.get('/api/profile', requireLogin, async (req, res) => {
-    const id = req.session.user_id
+    const id = req.session.users.id
     const userProfile = await user.getUser(id);
     res.json({success: userProfile});
 
