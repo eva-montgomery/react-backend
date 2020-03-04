@@ -219,7 +219,6 @@ app.post('/api/wines/create', requireLogin, upload.single('wine_label'), parseFo
     if (addNewWineId) {
         res.json({success: addNewWineId})
     }
-
 })
 
 /// EDIT A WINE ///
@@ -262,20 +261,22 @@ app.post('/api/wines/create', requireLogin, upload.single('wine_label'), parseFo
 // });
 
 
-
-
-
 /// DELETE A WINE ///
-app.get('/wines/:id/delete')
-app.post('/wines/:id/delete')
+// app.get('/wines/:id/delete')
 
-/// HOME ///
-
-
-
-
-
-
+app.post('/api/delete', requireLogin, parseForm, parseJson, async (req, res) => {
+    const { wine_id } = req.body;
+    try {
+        const deleteWine = await wine.deleteWine(wine_id);
+        res.json({
+            deletedWine: true
+        });  
+    } catch (err) {
+        res.json({
+            deletedWine: false
+        });  
+    }
+})
 
 
 

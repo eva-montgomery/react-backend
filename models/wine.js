@@ -212,8 +212,10 @@ async function addWinesToFavorite(user_id, wine_id) {
 
 
 // delete a wine
-async function deleteWine(id) {
-    const result = await db.result(`delete from wines where id=$1`, [id]);
+async function deleteWine(wine_id, id) {
+    const result = await db.result(`DELETE from favorite_wines WHERE wine_id = $1;
+    DELETE from wines
+    WHERE id = $1;`, [wine_id, id]);
     console.log(result);
     if (result.rowCount === 1) {
         return id;
