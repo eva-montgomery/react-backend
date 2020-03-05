@@ -266,6 +266,7 @@ app.post('/api/wines/create', requireLogin, upload.single('wine_label'), parseFo
 
 app.post('/api/delete', requireLogin, parseForm, parseJson, async (req, res) => {
     const { wine_id } = req.body;
+
     try {
         const deleteWine = await wine.deleteWine(wine_id);
         res.json({
@@ -278,7 +279,21 @@ app.post('/api/delete', requireLogin, parseForm, parseJson, async (req, res) => 
     }
 })
 
+/// DELETE FAV WINE BY USER ////
+app.post('/api/deletefavwine', requireLogin, parseForm, parseJson, async (req, res) => {
+    const { wine_id } = req.body;
 
+    try {
+        const deleteFavWine = await wine.deleteFavWine(wine_id);
+        res.json({
+            deletedWine: true
+        });  
+    } catch (err) {
+        res.json({
+            deletedWine: false
+        });  
+    }
+})
 
 
 

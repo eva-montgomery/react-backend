@@ -16,11 +16,12 @@ create table wines (
     comments text,
     wine_rating integer,
     is_favorite boolean, 
-    user_id integer references users (id)
+    user_id integer references users (id) on delete cascade
 );
 
 create table favorite_wines (
     id serial primary key,
-    user_id integer references users (id),
-    wine_id integer references wines (id)
+    user_id integer references users (id) on delete cascade,
+    wine_id integer references wines (id) on delete cascade
+  
 );

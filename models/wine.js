@@ -167,7 +167,7 @@ async function updateWineRating (id, wine_rating) {
 // favorite wines by user ID
 async function favoriteWinesByUser(user_id) {
     try {
-        const wines = await db.any(`SELECT wines.wine_name, wines.wine_name, wines.wine_price, wines.wine_label, wines.comments, wines.wine_rating, favorite_wines.user_id 
+        const wines = await db.any(`SELECT wines.wine_name, wines.wine_name, wines.wine_price, wines.wine_store, wines.wine_label, wines.comments, wines.wine_rating, favorite_wines.user_id 
         FROM wines 
         INNER JOIN favorite_wines
         ON wines.id = favorite_wines.wine_id
@@ -212,18 +212,47 @@ async function addWinesToFavorite(user_id, wine_id) {
 
 
 // delete a wine
-async function deleteWine(wine_id, id) {
-    const result = await db.result(`DELETE from favorite_wines WHERE wine_id = $1;
-    DELETE from wines
-    WHERE id = $1;`, [wine_id, id]);
-    console.log(result);
-    if (result.rowCount === 1) {
+//     const result = await db.result(`DELETE from favorite_wines WHERE wine_id = $1;
+//     DELETE from wines
+//     WHERE id = $1;`, [wine_id]);
+//     console.log(result);
+//     if (result.rowCount === 1) {
+    //         return id;
+    //     } else {
+        //         return null;
+        //     }
+        // };
+        
+async function deleteWine(wine_id) {
+const delWine = await db.result(`DELETE from wines WHERE id = $1;`, [wine_id])
+if (delWine.rowCount === 1) {
+    return id;
+} else {
+    return null;
+
+}}
+
+
+// Delete from favorite wines
+
+async function deleteFavWine(wine_id) {
+    const delFavWine = await db.result(`DELETE from favorite_wines WHERE wine_id = $1;`, [wine_id])
+    if (delFavWine.rowCount === 1) {
         return id;
     } else {
         return null;
-    }
-};
+    
+    }}
 
+// const delFavs = await db.result(`DELETE from favorite_wines WHERE wine_id = $1;`, [wine_id])
+// const delWine = await db.result(`
+// DELETE from wines
+// WHERE id = $1;`, [wine_id]);
+// console.log(delFavs);
+// if (delFavs.rowCount === 1 && delWine.rowCount === 1) {
+//     return id;
+// } else {
+//     return null;
 
 
 module.exports = {
@@ -240,6 +269,7 @@ module.exports = {
     updateWineComments,
     updateWineRating,
     deleteWine,
+    deleteFavWine,
     favoriteWinesByUser,
     addWinesToFavorite
     
