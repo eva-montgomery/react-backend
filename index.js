@@ -222,43 +222,19 @@ app.post('/api/wines/create', requireLogin, upload.single('wine_label'), parseFo
 })
 
 /// EDIT A WINE ///
-// app.post('/wines/:id/edit', requireLogin, parseForm, parseJson, async (req, res) => {
-//     const id = req.session.users.id;
-//     const { wine_id } = req.body;
+app.post('/api/editwines', requireLogin, upload.single('wine_label'), parseForm, parseJson, async (req, res) => {
+    const id = req.session.users.id;
+    const { wine_name, wine_type, wine_price, wine_store, comments, wine_rating } = req.body;
+    const wine_label = req.file.filename;
 
-//     const updateWine = await wines.updateWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating); 
+    const updateWine = await wine.updateWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating, id);
 
-//     res.render('pets/edit', {
-//         locals: {
-//             name: thePet.name,
-//             image: thePet.image,
-//             species: thePet.species,
-//             breed_id: thePet.breed_id,
-//             birthdate: dateToFormattedString(thePet.birthdate),
-//             pet_location: thePet.pet_location,
-//             color: thePet.color,
-//             gender: thePet.gender,
-//             size: thePet.size,
-//             pet_description: thePet.pet_description
-//         },
-//         partials,
-//     });
-// });
+    if (updateWine) {
+        res.json({success: updateWine})
+    }
+    
+});
 
-// app.post('/pets/:id/edit', requireLogin, upload.single('image'), parseForm, async (req, res) => {
-//     const { name, species, birthdate, pet_location, color, gender, size, pet_description } = req.body;
-//     const { id } = req.params;
-//     const image = req.file.filename;
-//     const updatedId = await pets.updatePet(id, name, species, birthdate, pet_location, color, gender, size, pet_description);
-//     const UpdateImage = await pets.updatePetImage(id, image);
-
-
-//     if (updatedId) {
-//         res.redirect(`/pets/${id}`);
-//     } else {
-//         res.redirect(`/pets/${id}/edit`)
-//     }
-// });
 
 
 /// DELETE A WINE ///
