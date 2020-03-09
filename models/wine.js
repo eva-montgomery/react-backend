@@ -1,5 +1,38 @@
 const db = require('./connection');
 
+// search by USER ID
+async function searchWinesByUserId(id, searchText) {
+    try {
+        const wineSearch = await db.any(` select * from wines
+        where wine_name like '%$1#%'
+        or wine_type like '%$1#%'
+        or wine_store like '%$1#%'
+        or comments like '%$1#%'
+        and user_id=$1d
+        `, [id, searchText]);
+        return wineSearch;
+    } catch (err) {
+        return [];
+    }
+}
+
+
+// Search Wines
+async function searchWines(searchText) {
+    try {
+        const wineSearch = await db.any(` select * from wines
+        where wine_name like '%$1#%'
+        or wine_type like '%$1#%'
+        or wine_store like '%$1#%'
+        or comments like '%$1#%'
+        `, [searchText]);
+        return wineSearch;
+    } catch (err) {
+        return [];
+    }
+}
+
+
 // all wines
 async function allWines() {
     try {
@@ -277,6 +310,8 @@ async function deleteFavWine(wine_id) {
 
 
 module.exports = {
+    searchWinesByUserId,
+    searchWines,
     allWines,
     getWinesByID,
     getWinesByUserID,

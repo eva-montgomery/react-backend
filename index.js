@@ -147,6 +147,40 @@ app.post('/profile/edit', requireLogin, parseForm, async (req, res) => {
 
 ///////////////////      WINE SECTION        ///////////////
 
+/// SEARCH FOR WINES /// 
+app.post('/api/mysearch', requireLogin, parseForm, parseJson, async (req, res) => {
+    const id = req.session.users.id;
+    const {searchText} = req.body;
+    try {
+        const wineSearch = await wine.searchWinesByUserId(id, searchText)
+        res.json({
+            wineSearch: wineSearch
+        });  
+    } catch (err) {
+        res.json({
+            wineSearch: wineSearch
+        });  
+    }
+});
+
+
+app.post('/api/search', requireLogin, parseForm, parseJson, async (req, res) => {
+    // const id = req.session.users.id;
+    const {searchText} = req.body;
+    try {
+        const wineSearch = await wine.searchWines(searchText)
+        res.json({
+            wineSearch: wineSearch
+        });  
+    } catch (err) {
+        res.json({
+            wineSearch: wineSearch
+        });  
+    }
+});
+
+
+
 /// GET ALL WINES ///
 app.get('/api/wines', requireLogin, async (req, res) => {
     console.log(req.session.users.id)
@@ -216,7 +250,6 @@ app.post('/api/wines/create', requireLogin, upload.single('wine_label'), parseFo
     const id = req.session.users.id;
     const { wine_name, wine_type, wine_price, wine_store, comments, wine_rating } = req.body;
     const wine_label = req.file.filename;
-// ADD IF STATEMENTS
     const addNewWineId = await wine.addWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating, id);
     if (addNewWineId) {
         res.json({success: addNewWineId})
@@ -225,10 +258,6 @@ app.post('/api/wines/create', requireLogin, upload.single('wine_label'), parseFo
 
 /// EDIT A WINE ///
 
-app.get('/api/editwines/:id(\\d+)/', requireLogin, async (req, res) => {
-    const editWineById = await wine.getWinesByID(req.params.id);
-    res.json({wineList: wineById});
-})
 
 app.post('/api/editwines', requireLogin, upload.single('wine_label'), parseForm, parseJson, async (req, res) => {
     console.log(req.body)
