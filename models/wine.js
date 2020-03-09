@@ -58,7 +58,7 @@ async function updateWine(id, wine_name, wine_type, wine_price, wine_store, wine
         wine_store=$5,
         wine_label=$6,
         comments=$7,
-        wine_rating=$8,
+        wine_rating=$8
     where id=$1;`,
     [id, wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating]);
     if (result.rowCount === 1) {
@@ -67,6 +67,27 @@ async function updateWine(id, wine_name, wine_type, wine_price, wine_store, wine
         return null;
     }
 }
+
+
+// update wine without image
+async function updateWineWOImage(id, wine_name, wine_type, wine_price, wine_store, comments, wine_rating) {
+    const result = await db.result(`
+    update wines set
+        wine_name=$2,
+        wine_type=$3,
+        wine_price=$4,
+        wine_store=$5,
+        comments=$6,
+        wine_rating=$7
+    where id=$1;`,
+    [id, wine_name, wine_type, wine_price, wine_store, comments, wine_rating]);
+    if (result.rowCount === 1) {
+        return id;
+    } else {
+        return null;
+    }
+}
+
 
 // update wine name
 async function updateWineName (id, wine_name) {
@@ -271,6 +292,7 @@ module.exports = {
     deleteWine,
     deleteFavWine,
     favoriteWinesByUser,
-    addWinesToFavorite
+    addWinesToFavorite,
+    updateWineWOImage
     
 };

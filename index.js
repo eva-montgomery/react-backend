@@ -190,6 +190,8 @@ app.get('/api/favorites', requireLogin, async (req, res) => {
 
 
 /// ADD FAVORITE WINES TO FAVORITES ////
+
+
 app.post('/api/addtofavorites', requireLogin, parseForm, parseJson, async (req, res) => {
     console.log(req.body)
     const id = req.session.users.id;
@@ -222,16 +224,39 @@ app.post('/api/wines/create', requireLogin, upload.single('wine_label'), parseFo
 })
 
 /// EDIT A WINE ///
-app.post('/api/editwines', requireLogin, upload.single('wine_label'), parseForm, parseJson, async (req, res) => {
-    const id = req.session.users.id;
-    const { wine_name, wine_type, wine_price, wine_store, comments, wine_rating } = req.body;
-    const wine_label = req.file.filename;
 
-    const updateWine = await wine.updateWine(wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating, id);
+app.get('/api/editwines/:id(\\d+)/', requireLogin, async (req, res) => {
+    const editWineById = await wine.getWinesByID(req.params.id);
+    res.json({wineList: wineById});
+})
+
+app.post('/api/editwines', requireLogin, upload.single('wine_label'), parseForm, parseJson, async (req, res) => {
+    console.log(req.body)
+
+    const { id, wine_name, wine_type, wine_price, wine_store, comments, wine_rating } = req.body;
+    console.log(req.body.wine_label)
+
+    const wine_label = req.file.filename;
+    if (wine_label) {
+        const updateWine = await wine.updateWine(id, wine_name, wine_type, wine_price, wine_store, wine_label, comments, wine_rating);
 
     if (updateWine) {
-        res.json({success: updateWine})
+        res.json({success: true})
+    } else {
+        res.json({success: false})
     }
+    } else {
+        const updateWine = await wine.updateWineWOImage(id, wine_name, wine_type, wine_price, wine_store, comments, wine_rating);
+
+        if (updateWine) {
+            res.json({success: true})
+        } else {
+            res.json({success: false})
+        }
+        
+    }
+
+    // const wine_label = req.file.filename;
     
 });
 
@@ -286,10 +311,10 @@ app.get('/api/logout', (req, res) => {
 });
 
 /// REDIRECT WHEN WRONG URL ////
-app.get('*', (req, res) => {
-    console.log("Redirecting, because no page here.");
-    res.redirect('/home');
-})
+// app.get('*', (req, res) => {
+//     console.log("Redirecting, because no page here.");
+//     res.redirect('/home');
+// })
 
 
 /// PORT LISTENING ////
