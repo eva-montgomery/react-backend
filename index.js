@@ -163,6 +163,16 @@ app.post('/api/mysearch', requireLogin, parseForm, parseJson, async (req, res) =
     }
 });
 
+// app.get('/api/mysearchresults', requireLogin, async (req, res) => {
+//     console.log(req.session.users.id)
+//     const myWineResults = await wine.searchWinesByUserId();
+
+//     const myWineSearch = [];
+//     for (let wine of myWineResults) {
+//         myWineSearch.push(wine); 
+//     }
+//     res.json({wineList: myWineSearch});
+// })
 
 app.post('/api/search', requireLogin, parseForm, parseJson, async (req, res) => {
     // const id = req.session.users.id;

@@ -1,15 +1,15 @@
 const db = require('./connection');
 
 // search by USER ID
-async function searchWinesByUserId(id, searchText) {
+async function searchWinesByUserId(user_id, searchText) {
     try {
         const wineSearch = await db.any(` select * from wines
-        where wine_name like '%$1#%'
-        or wine_type like '%$1#%'
-        or wine_store like '%$1#%'
-        or comments like '%$1#%'
-        and user_id=$1d
-        `, [id, searchText]);
+        where wine_name ILIKE '%$2#%' 
+        or wine_type ilike '%$2#%'
+        or wine_store ilike '%$2#%'
+        or comments ilike '%$2#%'
+        and user_id=$1
+        `, [user_id, searchText]);
         return wineSearch;
     } catch (err) {
         return [];
@@ -21,10 +21,10 @@ async function searchWinesByUserId(id, searchText) {
 async function searchWines(searchText) {
     try {
         const wineSearch = await db.any(` select * from wines
-        where wine_name like '%$1#%'
-        or wine_type like '%$1#%'
-        or wine_store like '%$1#%'
-        or comments like '%$1#%'
+        where wine_name ilike '%$1#%'
+        or wine_type ilike '%$1#%'
+        or wine_store ilike '%$1#%'
+        or comments ilike '%$1#%'
         `, [searchText]);
         return wineSearch;
     } catch (err) {
