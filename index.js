@@ -321,10 +321,11 @@ app.post('/api/delete', requireLogin, parseForm, parseJson, async (req, res) => 
 
 /// DELETE FAV WINE BY USER ////
 app.post('/api/deletefavwine', requireLogin, parseForm, parseJson, async (req, res) => {
+    const id = req.session.users.id;
     const { wine_id } = req.body;
 
     try {
-        const deleteFavWine = await wine.deleteFavWine(wine_id);
+        const deleteFavWine = await wine.deleteFavWine(wine_id, id);
         res.json({
             deletedWine: true
         });  

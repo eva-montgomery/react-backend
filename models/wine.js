@@ -221,7 +221,7 @@ async function updateWineRating (id, wine_rating) {
 // favorite wines by user ID
 async function favoriteWinesByUser(user_id) {
     try {
-        const wines = await db.any(`SELECT wines.wine_name, wines.wine_name, wines.wine_price, wines.wine_store, wines.wine_label, wines.comments, wines.wine_rating, favorite_wines.user_id 
+        const wines = await db.any(`SELECT wines.id, wines.wine_name, wines.wine_name, wines.wine_price, wines.wine_store, wines.wine_label, wines.comments, wines.wine_rating, favorite_wines.user_id 
         FROM wines 
         INNER JOIN favorite_wines
         ON wines.id = favorite_wines.wine_id
@@ -289,8 +289,8 @@ if (delWine.rowCount === 1) {
 
 // Delete from favorite wines
 
-async function deleteFavWine(wine_id) {
-    const delFavWine = await db.result(`DELETE from favorite_wines WHERE wine_id = $1;`, [wine_id])
+async function deleteFavWine(wine_id, user_id) {
+    const delFavWine = await db.one(`DELETE from favorite_wines WHERE wine_id=$1 and user_id=$2;`, [wine_id, user_id])
     if (delFavWine.rowCount === 1) {
         return id;
     } else {
