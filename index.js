@@ -152,27 +152,17 @@ app.post('/api/mysearch', requireLogin, parseForm, parseJson, async (req, res) =
     const id = req.session.users.id;
     const {searchText} = req.body;
     try {
-        const wineSearch = await wine.searchWinesByUserId(id, searchText)
+        const MyWineSearch = await wine.searchWinesByUserId(id, searchText)
         res.json({
-            wineSearch: wineSearch
+            wineSearch: MyWineSearch
         });  
     } catch (err) {
         res.json({
-            wineSearch: wineSearch
+            wineSearch: MyWineSearch
         });  
     }
 });
 
-// app.get('/api/mysearchresults', requireLogin, async (req, res) => {
-//     console.log(req.session.users.id)
-//     const myWineResults = await wine.searchWinesByUserId();
-
-//     const myWineSearch = [];
-//     for (let wine of myWineResults) {
-//         myWineSearch.push(wine); 
-//     }
-//     res.json({wineList: myWineSearch});
-// })
 
 app.post('/api/search', requireLogin, parseForm, parseJson, async (req, res) => {
     // const id = req.session.users.id;
@@ -309,10 +299,19 @@ app.post('/api/delete', requireLogin, parseForm, parseJson, async (req, res) => 
 
     try {
         const deleteWine = await wine.deleteWine(wine_id);
-        res.json({
-            deletedWine: true
-        });  
+        console.log(deleteWine)
+        if (deleteWine.rowCount === 1) {
+            res.json({
+                deletedWine: true
+            });  
+        } else {
+            res.json({
+                deletedWine: false
+            }); 
+        }
+
     } catch (err) {
+        console.log(err)
         res.json({
             deletedWine: false
         });  

@@ -3,14 +3,14 @@ const db = require('./connection');
 // search by USER ID
 async function searchWinesByUserId(user_id, searchText) {
     try {
-        const wineSearch = await db.any(` select * from wines
-        where wine_name ILIKE '%$2#%' 
+        const MyWineSearch = await db.any(` select * from wines
+        where (wine_name ILIKE '%$2#%' 
         or wine_type ilike '%$2#%'
         or wine_store ilike '%$2#%'
-        or comments ilike '%$2#%'
+        or comments ilike '%$2#%')
         and user_id=$1
         `, [user_id, searchText]);
-        return wineSearch;
+        return MyWineSearch;
     } catch (err) {
         return [];
     }
@@ -279,12 +279,8 @@ async function addWinesToFavorite(user_id, wine_id) {
         
 async function deleteWine(wine_id) {
 const delWine = await db.result(`DELETE from wines WHERE id = $1;`, [wine_id])
-if (delWine.rowCount === 1) {
-    return id;
-} else {
-    return null;
-
-}}
+return delWine
+}
 
 
 // Delete from favorite wines
