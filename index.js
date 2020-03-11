@@ -1,7 +1,7 @@
 
 const http = require('http');
 const express = require('express');
-
+const path = require('path');
 const multer = require('multer');
 const upload = multer({ dest: 'public/images'});
 
@@ -349,11 +349,10 @@ app.get('/api/logout', (req, res) => {
     });
 });
 
-/ REDIRECT WHEN WRONG URL ////
-app.get('*', (req, res) => {
-    console.log("Redirecting, because no page here.");
-    res.redirect('/');
-})
+// Handles any requests that don't match previous ones
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname + '/public/index.html'));
+});
 
 
 /// PORT LISTENING ////
