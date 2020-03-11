@@ -349,11 +349,11 @@ app.get('/api/logout', (req, res) => {
     });
 });
 
-/// REDIRECT WHEN WRONG URL ////
-// app.get('*', (req, res) => {
-//     console.log("Redirecting, because no page here.");
-//     res.redirect('/home');
-// })
+/ REDIRECT WHEN WRONG URL ////
+app.get('*', (req, res) => {
+    console.log("Redirecting, because no page here.");
+    res.redirect('/');
+})
 
 
 /// PORT LISTENING ////
